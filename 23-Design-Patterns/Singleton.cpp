@@ -25,11 +25,14 @@ private:
 class CSingleton2 {
 public:
     static CSingleton2* getInstance() {
-        lock();
+        // 对于加锁的优化，在外围先判断
         if (_s2 == NULL) {
-            _s2 = new CSingleton2;
+            lock();
+            if (_s2 == NULL) {
+                _s2 = new CSingleton2;
+            }
+            unlock();
         }
-        unlock();
         return _s2;
     }
 
